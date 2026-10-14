@@ -13,7 +13,7 @@ class Registro:
         self.nombre: str = nombre.strip()
  
     def __repr__(self) -> str:
-        return f'Registro(codigo={self.codigo}, nombre={self.nombre!r})'
+        return f'Registro(codigo={self.codigo}, nombre={self.nombre!r})' # !r sirve para mostrar el valor de la variable con comillas simples
  
     def __str__(self) -> str:
         return f'[{self.codigo}] {self.nombre}'
