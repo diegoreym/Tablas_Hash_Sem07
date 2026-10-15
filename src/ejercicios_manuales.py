@@ -1,5 +1,27 @@
 from registro import Registro
 from tabla_hash_doble import TablaHashDoble
+from tabla_hash_encadenamiento import TablaHashEncadenamiento
+
+
+def ejercicio_manual_encadenamiento() -> None:
+    tabla = TablaHashEncadenamiento(capacidad=11)
+    print("\n=== ENCADENAMIENTO: m = 11, sin redimensionar ===")
+    tabla.mostrar()
+    for codigo in [10, 21, 32, 43, 54]:
+        print(f"\nInsertar {codigo}: h({codigo}) = {codigo} % 11 = {codigo % 11}")
+        tabla.insertar(Registro(codigo, f"Producto {codigo}"))
+        tabla.mostrar()
+
+    print("\nBuscar 43:", tabla.buscar(43))
+    print("\nEliminar 21:", tabla.eliminar(21))
+    tabla.mostrar()
+    print("\nBuscar 43 despues de eliminar 21:", tabla.buscar(43))
+    print("La cadena sigue conectada; encadenamiento no utiliza BORRADO.")
+    print("\nInsertar 65: h(65) = 65 % 11 = 10")
+    tabla.insertar(Registro(65, "Producto 65"))
+    tabla.mostrar()
+    print(f"Factor final: 5 / 11 = {tabla.factor_carga():.4f}")
+    print(f"Rehashings realizados: {tabla.total_rehashings()}")
 
 def ejercicio_manual_doble_hashing() -> None:
     """Demuestra el comportamiento de la tabla con doble hashing (m=11)."""

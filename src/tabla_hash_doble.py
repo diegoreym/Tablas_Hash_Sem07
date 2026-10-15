@@ -1,5 +1,5 @@
 from registro import Registro
-from utils_hash import capacidad_rehashing
+from utils_hash import capacidad_rehashing, siguiente_primo
 
 # Marcador para distinguir una celda vacía de una que tuvo un elemento eliminado
 BORRADO = "BORRADO"
@@ -7,7 +7,11 @@ BORRADO = "BORRADO"
 class TablaHashDoble:
     def __init__(self, capacidad: int = 11) -> None:
         """Inicializa la tabla con capacidad 11 según las reglas comunes."""
-        self.capacidad = capacidad
+        if type(capacidad) is not int:
+            raise TypeError("La capacidad debe ser un entero")
+        if capacidad < 2:
+            raise ValueError("La capacidad debe ser al menos 2")
+        self.capacidad = siguiente_primo(capacidad)
         self.tabla: list[Registro | str | None] = [None] * self.capacidad
         self.tamano = 0
         self.umbral = 0.65
@@ -22,7 +26,8 @@ class TablaHashDoble:
 
     def insertar(self, registro: Registro) -> None:
         """Inserta o actualiza un registro mediante doble hashing."""
-        if self.factor_carga() >= self.umbral:
+        if (self.buscar(registro.codigo) is None
+                and (self.tamano + 1) / self.capacidad > self.umbral):
             self.rehashing()
 
         codigo = registro.codigo

@@ -4,7 +4,11 @@ from utils_hash import capacidad_rehashing
 
 class TablaHashCuadratico:
     def __init__(self, capacidad: int = 11) -> None:
-        self.capacidad: int = capacidad
+        if type(capacidad) is not int:
+            raise TypeError("La capacidad debe ser un entero")
+        if capacidad < 2:
+            raise ValueError("La capacidad debe ser al menos 2")
+        self.capacidad: int = siguiente_primo(capacidad)
         self.tabla: list[Registro | str | None] = [None] * self.capacidad
         self.cantidad: int = 0
         self.BORRADO: str = "BORRADO"
@@ -17,7 +21,8 @@ class TablaHashCuadratico:
         return codigo % self.capacidad
 
     def insertar(self, registro: Registro) -> None:
-        if self.factor_carga() > self.umbral:
+        if (self.buscar(registro.codigo) is None
+                and (self.cantidad + 1) / self.capacidad > self.umbral):
             self.rehashing()
 
         indice_base = self._hash(registro.codigo)
