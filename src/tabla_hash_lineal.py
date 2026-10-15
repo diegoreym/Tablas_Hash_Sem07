@@ -43,7 +43,7 @@ class TablaHashLineal:
                 destino = primero_borrado if primero_borrado is not None else indice
 
                 if(self.cantidad + 1) / self.capacidad > 0.65:
-                    self._rehashing()
+                    self.rehashing()
                     self.insertar(registro)
                     return
 
@@ -58,7 +58,7 @@ class TablaHashLineal:
 
         if primero_borrado is not None:
             if(self.cantidad + 1) / self.capacidad >0.65:
-                self._rehashing()
+                self.rehashing()
                 self.insertar(registro)
                 return
 
@@ -67,7 +67,7 @@ class TablaHashLineal:
             return
 
         #Si no hay posicion disponible, ampliar la tabla y reintentar la inserción
-        self._rehashing()
+        self.rehashing()
         self.insertar(registro)
 
     def buscar(self, codigo: int) -> Registro | None:
@@ -119,6 +119,9 @@ class TablaHashLineal:
 
     def factor_carga(self) -> float:
         return self.cantidad / self.capacidad
+
+    def rehashing(self) -> None:
+        self._rehashing()
 
     def _rehashing(self) -> None:
         #Guardar unicamente los registros activos
