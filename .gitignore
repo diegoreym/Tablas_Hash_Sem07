@@ -1,0 +1,14 @@
+src/__pycache__/utils_hash.cpython-314.pyc
+src/__pycache__/tabla_hash_lineal.cpython-314.pyc
+src/__pycache__/tabla_hash_encadenamiento.cpython-314.pyc
+src/__pycache__/tabla_hash_doble.cpython-314.pyc
+src/__pycache__/tabla_hash_cuadratico.cpython-314.pyc
+src/__pycache__/experimento_hash.cpython-314.pyc
+src/__pycache__/ejercicios_manuales.cpython-314.pyc
+src/tests/__pycache__/test_lineal.cpython-314.pyc
+src/tests/__pycache__/test_encadenamiento.cpython-314.pyc
+src/tests/__pycache__/test_integracion_hash.cpython-314.pyc
+src/tests/__pycache__/test_doble.cpython-314.pyc
+src/tests/__pycache__/test_cuadratico.cpython-314.pyc
+src/__pycache__/registro.cpython-314.pyc
+src/__pycache__/main.cpython-314.pyc
