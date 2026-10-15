@@ -192,10 +192,5 @@ def ejercicio_manual_cuadratico() -> None:
     for j in range(6):
         indice = (10 + j**2) % 11
         print(f"  Salto j={j} -> (10 + {j}^2) % 11 = Posición {indice}")
-    
-    print("\nCONCLUSIÓN PARA EL INFORME:")
-    print("Como se observa, los saltos son: 10, 0, 3, 8, 4, y luego en j=5 salta al 2.")
-    print("A partir de aquí, la matemática empieza a rebotar en las mismas casillas.")
-    print("Jamás visitará las posiciones 1, 5, 6, 7 o 9. Por eso el sondeo cuadrático")
-    print("no cubre toda la tabla y exige un factor de carga estricto de 0.45 para evitar bucles.")
+ 
     print("==================================================\n")
