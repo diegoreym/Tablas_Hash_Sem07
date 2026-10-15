@@ -7,7 +7,7 @@ BORRADO = "BORRADO"
 class TablaHashDoble:
     def __init__(self, capacidad: int = 11) -> None:
         """Inicializa la tabla con capacidad 11 según las reglas comunes."""
-        if self.capacidad < 0 or not isinstance(capacidad, int):
+        if capacidad < 0 or not isinstance(capacidad, int):
             raise ValueError("La capacidad debe ser un entero positivo.")
         self.capacidad = capacidad
         self.tabla: list[Registro | str | None] = [None] * self.capacidad
@@ -68,7 +68,7 @@ class TablaHashDoble:
                 return None
             if actual != BORRADO and actual.codigo == codigo:
                 return actual
-        return None
+        return None # Si no se encuentra el registro después de recorrer toda la tabla, se retorna None
 
     def eliminar(self, codigo: int) -> bool:
         """Reemplaza lógicamente el registro con BORRADO."""
