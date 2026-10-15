@@ -152,7 +152,7 @@ def ejercicio_manual_cuadratico() -> None:
     print("==================================================")
     
     tabla = TablaHashCuadratico(capacidad=11)
- 
+    tabla.umbral = 1.0
     claves = [10, 21, 32, 43, 54]
     print("\n--- 1. INSERTANDO SECUENCIA: 10, 21, 32, 43, 54 ---")
     for codigo in claves:
