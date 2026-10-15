@@ -1,4 +1,4 @@
-from _future_ import annotations
+from __future__ import annotations
 import argparse
 import csv
 import gc
@@ -37,7 +37,7 @@ def _leer(tabla, *nombres):
         if hasattr(tabla, nombre):
             valor = getattr(tabla, nombre)
             return valor() if callable(valor) else valor
-    raise AttributeError(f"{type(tabla)._name_} no expone ninguno de {nombres}")
+    raise AttributeError(f"{type(tabla).__name__} no expone ninguno de {nombres}")
 
 
 def capacidad_de(tabla) -> int:
@@ -96,19 +96,19 @@ def pasada_tiempos(clase, datos) -> dict:
         t_insercion = _cronometrar(tabla.insertar, registros)
         factor, capacidad = tabla.factor_carga(), capacidad_de(tabla)
         if cantidad_de(tabla) != n:
-            raise RuntimeError(f"{clase._name_}: cantidad {cantidad_de(tabla)} != {n}")
+            raise RuntimeError(f"{clase.__name__}: cantidad {cantidad_de(tabla)} != {n}")
         t_exitosa = _cronometrar(tabla.buscar, presentes)
         t_fallida = _cronometrar(tabla.buscar, ausentes)
         t_eliminacion = _cronometrar(tabla.eliminar, orden_borrado)
     finally:
         gc.enable()
     if cantidad_de(tabla) != 0:
-        raise RuntimeError(f"{clase._name_}: quedaron {cantidad_de(tabla)} registros")
+        raise RuntimeError(f"{clase.__name__}: quedaron {cantidad_de(tabla)} registros")
 
     derivados = rehashings_desde_capacidad(capacidad)
     nativos = rehashings_nativos(tabla)
     if nativos is not None and nativos != derivados:
-        print(f"  AVISO {clase._name_}: contador propio={nativos}, "
+        print(f"  AVISO {clase.__name__}: contador propio={nativos}, "
               f"deducido por capacidad={derivados}")
     return {
         "insercion": t_insercion, "busq_exitosa": t_exitosa,
@@ -123,13 +123,13 @@ def pasada_tiempos(clase, datos) -> dict:
 class _ListaContadora(list):
     """Lista que cuenta las lecturas tabla[i]. Iterar o escribir no cuenta."""
 
-    def _init_(self, datos, contador):
-        super()._init_(datos)
+    def __init__(self, datos, contador):
+        super().__init__(datos)
         self._contador = contador
 
-    def _getitem_(self, indice):
+    def __getitem__(self, indice):
         self._contador[0] += 1
-        return super()._getitem_(indice)
+        return super().__getitem__(indice)
 
 
 def _clase_contadora(clase):
@@ -137,9 +137,9 @@ def _clase_contadora(clase):
     El setter re-envuelve la lista cada vez que rehashing() crea una tabla nueva."""
 
     class Contada(clase):
-        def _init_(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs):
             self.sondeos = [0]
-            super()._init_(*args, **kwargs)
+            super().__init__(*args, **kwargs)
 
         @property
         def tabla(self):
@@ -160,7 +160,7 @@ def _instrumentar_cadenas(contador):
 
     def visitados(cadena, codigo):
         recorridos = 0
-        for registro in cadena:                  # usa _iter_, que no se modifica
+        for registro in cadena:                  # usa __iter__, que no se modifica
             recorridos += 1
             if registro.codigo == codigo:
                 break
@@ -170,7 +170,7 @@ def _instrumentar_cadenas(contador):
         original = originales[nombre]
 
         def instrumentada(self, argumento):
-            contador[0] += max(1, visitados(self, extraer_codigo(argumento)))
+            contador[0] += visitados(self, extraer_codigo(argumento))
             return original(self, argumento)
         return instrumentada
 
@@ -215,11 +215,11 @@ def pasada_sondeos(clase, datos) -> dict:
 
     # Verificacion de integridad (aprovecha esta pasada, que no se cronometra)
     if any(r is None for r in exitosas):
-        raise RuntimeError(f"{clase._name_}: una clave insertada no se encontro")
+        raise RuntimeError(f"{clase.__name__}: una clave insertada no se encontro")
     if any(r is not None for r in fallidas):
-        raise RuntimeError(f"{clase._name_}: se encontro una clave ausente")
+        raise RuntimeError(f"{clase.__name__}: se encontro una clave ausente")
     if not all(borrados):
-        raise RuntimeError(f"{clase._name_}: no se pudo eliminar una clave presente")
+        raise RuntimeError(f"{clase.__name__}: no se pudo eliminar una clave presente")
     return resultado
 
 
@@ -342,6 +342,19 @@ def guardar_csv(resumen, tamanos, ruta: Path):
                 )
 
 
+def ejecutar_experimento(tamanos=TAMANOS, repeticiones: int = REPETICIONES) -> None:
+    print(f"Experimento hash | semilla={SEMILLA} | n={list(tamanos)} | "
+          f"repeticiones={repeticiones}")
+    print("Sondeos: lecturas de casilla en direccionamiento abierto; "
+          "comparaciones de nodos en encadenamiento (cadena vacia: 0).")
+    medidas = ejecutar(tamanos, repeticiones)
+    resumen = imprimir_tablas(medidas, tamanos)
+    ruta = Path(__file__).with_name("resultados_experimento.csv")
+    guardar_csv(resumen, tamanos, ruta)
+    print(f"Resultados guardados en {ruta.name}")
+    print("Nota: los tiempos de insercion incluyen el rehashing que ocurra durante la insercion.")
+
+
 def main() -> None:
     analizador = argparse.ArgumentParser(description="Experimento comparativo de tablas hash")
     analizador.add_argument("--rapido", action="store_true",
@@ -350,15 +363,7 @@ def main() -> None:
     tamanos = TAMANOS[:2] if argumentos.rapido else TAMANOS
     repeticiones = 2 if argumentos.rapido else REPETICIONES
 
-    print(f"Experimento hash | semilla={SEMILLA} | n={list(tamanos)} | "
-          f"repeticiones={repeticiones}")
-    medidas = ejecutar(tamanos, repeticiones)
-    resumen = imprimir_tablas(medidas, tamanos)
+    ejecutar_experimento(tamanos, repeticiones)
 
-    ruta = Path(_file_).with_name("resultados_experimento.csv")
-    guardar_csv(resumen, tamanos, ruta)
-    print(f"Resultados guardados en {ruta.name}")
-    print("Nota: los tiempos de insercion incluyen el rehashing que ocurra durante la insercion.")
-
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
