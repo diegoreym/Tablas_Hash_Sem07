@@ -143,3 +143,59 @@ def ejercicio_manual_lineal() -> None:  # sourcery skip: extract-duplicate-metho
 
     print("\n========== FIN DEL EJERCICIO LINEAL ==========")
 
+from registro import Registro
+from tabla_hash_cuadratico import TablaHashCuadratico
+
+def ejercicio_manual_cuadratico() -> None:
+    print("\n==================================================")
+    print("   EJERCICIO MANUAL: TABLA HASH CUADRÁTICA ")
+    print("==================================================")
+    
+    tabla = TablaHashCuadratico(capacidad=11)
+ 
+    claves = [10, 21, 32, 43, 54]
+    print("\n--- 1. INSERTANDO SECUENCIA: 10, 21, 32, 43, 54 ---")
+    for codigo in claves:
+        print(f"Insertando {codigo} (Índice base: {codigo % 11})...")
+        tabla.insertar(Registro(codigo, f"Producto {codigo}"))
+    
+    tabla.mostrar()
+
+    print("\n--- 2. BUSCANDO CÓDIGO 43 ---")
+    resultado = tabla.buscar(43)
+    if resultado:
+        print(f"ÉXITO: Encontrado -> {resultado.codigo}: {resultado.nombre}")
+    else:
+        print("ERROR: No encontrado")
+
+    print("\n--- 3. ELIMINANDO CÓDIGO 21 ---")
+    tabla.eliminar(21)
+    print("Se ha colocado el marcador 'BORRADO' en la posición del 21.")
+    tabla.mostrar()
+
+    print("\n--- 4. BUSCANDO CÓDIGO 43 (DESPUÉS DEL BORRADO) ---")
+    print("Demostración: El marcador BORRADO permite que el algoritmo siga saltando hasta hallar el 43.")
+    resultado = tabla.buscar(43)
+    if resultado:
+        print(f"ÉXITO: Encontrado -> {resultado.codigo}: {resultado.nombre}")
+    else:
+        print("ERROR: No encontrado")
+
+    print("\n--- 5. INSERTANDO CÓDIGO 65 ---")
+    print("Al insertar el 65, su índice base es 10. Como está ocupado, saltará.")
+    print("En el salto j=1 (posición 0), encontrará el 'BORRADO' del código 21 y reciclará el espacio.")
+    tabla.insertar(Registro(65, "Producto 65"))
+    tabla.mostrar()
+
+    print("\n--- 6. DEMOSTRACIÓN: LIMITACIÓN DE COBERTURA ---")
+    print("Si evaluamos los saltos j=0 hasta j=5 para un índice base de 10 con m=11:")
+    for j in range(6):
+        indice = (10 + j**2) % 11
+        print(f"  Salto j={j} -> (10 + {j}^2) % 11 = Posición {indice}")
+    
+    print("\nCONCLUSIÓN PARA EL INFORME:")
+    print("Como se observa, los saltos son: 10, 0, 3, 8, 4, y luego en j=5 salta al 2.")
+    print("A partir de aquí, la matemática empieza a rebotar en las mismas casillas.")
+    print("Jamás visitará las posiciones 1, 5, 6, 7 o 9. Por eso el sondeo cuadrático")
+    print("no cubre toda la tabla y exige un factor de carga estricto de 0.45 para evitar bucles.")
+    print("==================================================\n")
