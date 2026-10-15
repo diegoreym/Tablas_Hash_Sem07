@@ -7,6 +7,8 @@ BORRADO = "BORRADO"
 class TablaHashDoble:
     def __init__(self, capacidad: int = 11) -> None:
         """Inicializa la tabla con capacidad 11 según las reglas comunes."""
+        if self.capacidad < 0 or not isinstance(capacidad, int):
+            raise ValueError("La capacidad debe ser un entero positivo.")
         self.capacidad = capacidad
         self.tabla: list[Registro | str | None] = [None] * self.capacidad
         self.tamano = 0
@@ -17,8 +19,8 @@ class TablaHashDoble:
         return codigo % self.capacidad
 
     def h2(self, codigo: int) -> int:
-        """Función hash secundaria h2(k) = 1 + (k % (m - 1)). Nunca será 0."""
-        return 1 + (codigo % (self.capacidad - 1))
+        """Función hash secundaria para evitar el cero h2(k) = 1 + (k % (m - 1))"""
+        return 1 + (codigo % (self.capacidad - 1)) #tamaño de salto
 
     def insertar(self, registro: Registro) -> None:
         """Inserta o actualiza un registro mediante doble hashing."""
